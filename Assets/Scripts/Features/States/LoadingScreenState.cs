@@ -7,30 +7,50 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class LoadingScreenState : IState
 {
-    private AppManager appManager;
+    private AppManager _appManager;
     private UIService _uiService;
     private LocalServer _localServer;
     private IAssetProvider _assetProvider;
+    private StateMachine _stateMachine;
+    private AppData _appData;
 
-    public LoadingScreenState(AppManager appManager, UIService uiService, LocalServer localServer)
+    public LoadingScreenState(AppManager appManager, UIService uiService, LocalServer localServer, 
+        StateMachine stateMachine, AppData appData)
     {
-        this.appManager = appManager;
+        _appManager = appManager;
        _uiService = uiService;
        _localServer = localServer;
        _assetProvider = new AssetProvider();
+       _stateMachine = stateMachine;
+       _appData = appData;
     }
 
     public async void Enter()
     {
-        _uiService.ShowLoadingScreen().Forget();
+        var loadingView = await _uiService.ShowLoadingScreen();
         
         var settings = await _localServer.LoadJson(LocalServer.JsonName_Settings);
         var greeting = await _localServer.LoadJson(LocalServer.JsonName_Greeting);
         var sprite = _localServer.LoadSpriteFromBundle("ui_elements", "button");
+        _appData.ButtonSprite = sprite;
         
-        if (!string.IsNullOrEmpty(settings) && !string.IsNullOrEmpty(greeting) && sprite != null)
+        if (!string.IsNullOrEmpty(settings))
         {
-            Debug.Log($"JSON Content: {settings}");
+            _appData.StartingNumber = JsonUtility.FromJson<AppData.Settings>(settings).startingNumber;
+            Debug.Log(_appData.StartingNumber);
+        }
+        
+        if (!string.IsNullOrEmpty(greeting))
+        {
+            _appData.Message = JsonUtility.FromJson<AppData.Greeting>(greeting).message;
+            Debug.Log(_appData.Message);
+        }
+        
+        await UniTask.WaitUntil(() => loadingView.GetProgressBarStatus());
+        
+        if (_appData.StartingNumber != 0 && !string.IsNullOrEmpty(_appData.Message) && _appData.ButtonSprite != null)
+        {
+            _stateMachine.ChangeState(new MainMenuState(_appManager, _uiService, _appData));
         }
         else
         {
@@ -40,6 +60,6 @@ public class LoadingScreenState : IState
 
     public void Exit()
     {
-        
+        _uiService.HideLoadingScreen();
     }
 }
