@@ -1,17 +1,14 @@
-using Cysharp.Threading.Tasks;
-using UnityEngine;
-
 public class MainMenuState : IState
 {
-    private AppManager _appManager;
     private UIService _uiService;
     private AppData _appData;
+    private LocalServer _localServer;
 
-    public MainMenuState(AppManager appManager, UIService uiService, AppData appData)
+    public MainMenuState(UIService uiService, AppData appData, LocalServer localServer)
     {
-        _appManager = appManager;
         _uiService = uiService;
         _appData = appData;
+        _localServer = localServer;
     }
 
     public async void Enter()
@@ -21,11 +18,11 @@ public class MainMenuState : IState
 
         if (counter == 0) counter = _appData.StartingNumber;
             
-        mainMenuView.UpdateData(_appData.Message, _appData.ButtonSprite, counter);
+        mainMenuView.UpdateData(_appData, _localServer, counter);
     }
 
     public void Exit()
     {
-      
+      _uiService.HideMainScreen();
     }
 }

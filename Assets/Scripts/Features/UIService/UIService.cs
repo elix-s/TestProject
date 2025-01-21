@@ -1,4 +1,3 @@
-using System;
 using Common.AssetsSystem;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -39,5 +38,10 @@ public class UIService : MonoBehaviour
         _mainScreenUnloader.AttachInstance(mainScreenWindowView.gameObject);
         
         return mainScreenWindowView;
+    }
+    
+    public void HideMainScreen()
+    {
+        _mainScreenUnloader.Dispose();
     }
 }

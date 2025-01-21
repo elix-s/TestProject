@@ -598,6 +598,7 @@ MonoBehaviour:
   _buttonImage: {fileID: 3373711299910187453}
   _counter: {fileID: 8833160616537123695}
   _counterButton: {fileID: 5314599585365283792}
+  _updateContentButton: {fileID: 2934235847319038235}
 --- !u!1 &5214408987883244433
 GameObject:
   m_ObjectHideFlags: 0

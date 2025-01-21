@@ -1,8 +1,6 @@
-using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class AppManager : MonoBehaviour
+public class AppInit : MonoBehaviour
 {
     [SerializeField] private UIService _uiService;
     [SerializeField] private LocalServer _localServer;
@@ -15,7 +13,7 @@ public class AppManager : MonoBehaviour
         _appData = new AppData();
         _uiService.Init();
         _localServer.Init();
-        _stateMachine.ChangeState(new LoadingScreenState(this, _uiService, _localServer, _stateMachine, _appData));
+        _stateMachine.ChangeState(new LoadingScreenState(_uiService, _localServer, _stateMachine, _appData));
     }
 }
 
