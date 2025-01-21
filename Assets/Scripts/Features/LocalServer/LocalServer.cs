@@ -27,6 +27,7 @@ public class LocalServer : MonoBehaviour
     private void CreateFile(string fileName, string content)
     {
         string filePath = Path.Combine(streamingAssetsPath, fileName);
+        
         if (!File.Exists(filePath))
         {
             File.WriteAllText(filePath, content);

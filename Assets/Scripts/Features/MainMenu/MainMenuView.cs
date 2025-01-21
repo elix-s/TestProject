@@ -30,5 +30,6 @@ public class MainMenuView : MonoBehaviour
     {
         _currentCounter += 1;
         _counter.text = _currentCounter.ToString();
+        SaveSystem.SaveCounter(_currentCounter);
     }
 }

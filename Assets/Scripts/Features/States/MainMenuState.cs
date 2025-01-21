@@ -17,7 +17,11 @@ public class MainMenuState : IState
     public async void Enter()
     {
         var mainMenuView = await _uiService.ShowMainScreen();
-        mainMenuView.UpdateData(_appData.Message, _appData.ButtonSprite, _appData.StartingNumber);
+        var counter = SaveSystem.LoadCounter(0);
+
+        if (counter == 0) counter = _appData.StartingNumber;
+            
+        mainMenuView.UpdateData(_appData.Message, _appData.ButtonSprite, counter);
     }
 
     public void Exit()
