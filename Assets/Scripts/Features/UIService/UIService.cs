@@ -16,7 +16,6 @@ public class UIService : MonoBehaviour
 
     public async UniTask ShowLoadingScreen()
     {
-        Debug.Log(_assetProvider);
         var loadingWindow = await _assetProvider.GetAssetAsync<GameObject>("LoadingScreen");
         var loadingWindowPrefab = Instantiate(loadingWindow);
         _loadingScreenUnloader.AddResource(loadingWindow);

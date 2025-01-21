@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class LocalServer : MonoBehaviour
 {
-    private const string JsonName_Settings = "Settings.json";
-    private const string JsonName_Greeting = "Greeting.json";
+    public const string JsonName_Settings = "Settings.json";
+    public const string JsonName_Greeting = "Greeting.json";
+    private string _assetBundlesPath;
     
     private string streamingAssetsPath;
 
-    private void Awake()
+    public void Init()
     {
         streamingAssetsPath = Application.streamingAssetsPath;
+        _assetBundlesPath = Path.Combine(Application.dataPath, "AssetBundles");
         
         if (!Directory.Exists(streamingAssetsPath))
         {
@@ -42,5 +44,35 @@ public class LocalServer : MonoBehaviour
 
         Debug.LogError($"File not found: {filePath}");
         return null;
+    }
+    
+    public Sprite LoadSpriteFromBundle(string bundleName, string spriteName)
+    {
+        string bundlePath = Path.Combine(_assetBundlesPath, bundleName);
+
+        if (!File.Exists(bundlePath))
+        {
+            Debug.LogError($"Asset Bundle not found at path: {bundlePath}");
+            return null;
+        }
+        
+        AssetBundle bundle = AssetBundle.LoadFromFile(bundlePath);
+        
+        if (bundle == null)
+        {
+            Debug.LogError($"Failed to load Asset Bundle: {bundleName}");
+            return null;
+        }
+        
+        Sprite sprite = bundle.LoadAsset<Sprite>(spriteName);
+        
+        if (sprite == null)
+        {
+            Debug.LogError($"Sprite '{spriteName}' not found in Asset Bundle '{bundleName}'");
+        }
+        
+        bundle.Unload(false);
+
+        return sprite;
     }
 }
